@@ -1,149 +1,183 @@
-# API REST de tareas
+Este proyecto lo hice para practicar lo aprendido en Programación Backend, utilizando Node.js y Express.
 
-API basica creada con Node.js y Express para administrar tareas mediante operaciones CRUD. Los datos se guardan en un array de JavaScript en memoria; no se utiliza una base de datos y las tareas se reinician al detener el servidor.
+La idea es crear una API sencilla que permita agregar tareas, verlas, modificarlas y eliminarlas. Para guardar la información utilicé un arreglo de JavaScript, por lo que no necesita una base de datos. Las tareas se pierden cuando se reinicia el servidor.
 
-## Requisitos
+¿Qué utilicé?
 
-- Node.js 18 o posterior
-- npm
+Node.js
 
-## Instalacion y ejecucion
+Express
 
-Desde la carpeta del proyecto, instala las dependencias y ejecuta el servidor:
+JavaScript
 
-```powershell
+Git y GitHub
+
+¿Cómo ejecutar el proyecto?
+
+Primero, hay que tener instalado Node.js y npm.
+
+Después, desde la terminal y dentro de la carpeta del proyecto, ejecutar:
+
 npm install
 npm start
-```
 
-El servidor queda disponible en `http://localhost:3000`. Para usar otro puerto, define la variable de entorno `PORT`.
+El servidor se ejecuta en:
 
-## Estructura
+http://localhost:3000
 
-- `index.js`: configura Express, el middleware JSON y las respuestas para errores.
-- `routes.js`: define y valida los endpoints de tareas.
-- `data.js`: mantiene el array de tareas compartido por las rutas.
+Archivos del proyecto
 
-Express convierte el JSON entrante en `req.body`; las rutas validan los datos, actualizan el array de `data.js` y responden con JSON y un codigo HTTP apropiado.
+index.js: inicia el servidor y configura Express.
 
-## Endpoints
+routes.js: contiene las rutas para trabajar con las tareas.
 
-| Metodo | Ruta | Descripcion |
-| --- | --- | --- |
-| GET | `/tareas` | Lista todas las tareas. |
-| GET | `/tareas/:id` | Consulta una tarea por su identificador. |
-| POST | `/tareas` | Crea una tarea. `titulo` y `descripcion` son obligatorios; `completada` es opcional y por defecto es `false`. |
-| PUT | `/tareas/:id` | Actualiza titulo y descripcion; tambien puede actualizar `completada`. |
-| DELETE | `/tareas/:id` | Elimina una tarea y devuelve la tarea eliminada. |
+data.js: guarda las tareas en un arreglo.
 
-Ejemplo del cuerpo JSON para crear o actualizar:
+test/routes.test.js: contiene las pruebas que hice para comprobar el funcionamiento de la API.
 
-```json
-{
-  "titulo": "Estudiar Express",
-  "descripcion": "Repasar las rutas CRUD",
-  "completada": false
-}
-```
+package.json: contiene las dependencias y los comandos del proyecto.
 
-Los identificadores deben ser enteros positivos. `titulo` y `descripcion` deben ser textos no vacios; si se envia `completada`, debe ser booleano. Los errores de validacion devuelven estado `400`, las rutas o tareas inexistentes devuelven `404`, y todos los errores tienen un cuerpo JSON con la propiedad `error`.
+Operaciones que se pueden realizar
 
-## Pruebas manuales con curl
+Método
 
-Con el servidor en ejecucion, crea una tarea:
+Ruta
 
-```powershell
-curl.exe -i -X POST http://localhost:3000/tareas -H "Content-Type: application/json" -d '{"titulo":"Estudiar Express","descripcion":"Repasar las rutas CRUD"}'
-```
+Para qué sirve
 
-Respuesta esperada (`201 Created`):
+GET
 
-```json
-{
-  "id": 1,
-  "titulo": "Estudiar Express",
-  "descripcion": "Repasar las rutas CRUD",
-  "completada": false
-}
-```
+/tareas
 
-Lista las tareas (`GET /tareas`):
+Ver todas las tareas.
 
-```powershell
-curl.exe -i http://localhost:3000/tareas
-```
+GET
 
-Respuesta (`200 OK`):
+/tareas/:id
 
-```json
-[
-  {
-    "id": 1,
-    "titulo": "Estudiar Express",
-    "descripcion": "Repasar las rutas CRUD",
-    "completada": false
-  }
-]
-```
+Buscar una tarea por su ID.
 
-Consulta una tarea (`GET /tareas/1`):
+POST
 
-```powershell
-curl.exe -i http://localhost:3000/tareas/1
-```
+/tareas
 
-Respuesta (`200 OK`):
+Crear una tarea nueva.
 
-```json
+PUT
+
+/tareas/:id
+
+Modificar una tarea.
+
+DELETE
+
+/tareas/:id
+
+Eliminar una tarea.
+
+Cada tarea tiene cuatro campos:
+
+id: número que identifica la tarea.
+
+titulo: nombre de la tarea.
+
+descripcion: detalle de la tarea.
+
+completada: indica si la tarea está terminada (true o false).
+
+Ejemplos de uso
+
+1. Crear una tarea
+
+Para crear una tarea utilicé el método POST. En PowerShell ejecuté:
+
+Invoke-RestMethod -Uri "http://localhost:3000/tareas" -Method Post -ContentType "application/json" -Body '{"titulo":"Estudiar Express","descripcion":"Practicar las rutas CRUD"}'
+
+La respuesta incluye la tarea creada, su ID y el estado completada en false.
+
+Ejemplo de respuesta:
+
 {
   "id": 1,
   "titulo": "Estudiar Express",
-  "descripcion": "Repasar las rutas CRUD",
+  "descripcion": "Practicar las rutas CRUD",
   "completada": false
 }
-```
 
-Actualiza una tarea (`PUT /tareas/1`):
+2. Ver las tareas
 
-```powershell
-curl.exe -i -X PUT http://localhost:3000/tareas/1 -H "Content-Type: application/json" -d '{"titulo":"Estudiar Express","descripcion":"Practicar la API","completada":true}'
-```
+Para consultar las tareas utilicé GET:
 
-Respuesta (`200 OK`):
+Invoke-RestMethod -Uri "http://localhost:3000/tareas" -Method Get
 
-```json
+Esto muestra las tareas que se encuentran guardadas en el arreglo.
+
+3. Modificar una tarea
+
+Para modificar una tarea utilicé PUT:
+
+Invoke-RestMethod -Uri "http://localhost:3000/tareas/1" -Method Put -ContentType "application/json" -Body '{"titulo":"Estudiar Express","descripcion":"Practicar y probar la API","completada":true}'
+
+Con esta operación pude cambiar la descripción y marcar la tarea como completada.
+
+4. Eliminar una tarea
+
+Para eliminar una tarea utilicé DELETE:
+
+Invoke-RestMethod -Uri "http://localhost:3000/tareas/1" -Method Delete
+
+La tarea se elimina del arreglo y deja de aparecer en la consulta.
+
+Validaciones
+
+También agregué validaciones para evitar que se creen o modifiquen tareas con el título o la descripción vacíos.
+
+Cuando se envían datos incorrectos, la API devuelve un error con el código 400. Si se intenta modificar o eliminar una tarea que no existe, devuelve 404.
+
+Por ejemplo, al intentar crear una tarea sin descripción, la respuesta fue:
+
 {
-  "id": 1,
-  "titulo": "Estudiar Express",
-  "descripcion": "Practicar la API",
-  "completada": true
+  "error": "La descripcion es obligatoria y debe ser texto"
 }
-```
 
-Elimina una tarea (`DELETE /tareas/1`):
+Durante las pruebas comprobé que estas validaciones funcionaran tanto al crear como al modificar tareas.
 
-```powershell
-curl.exe -i -X DELETE http://localhost:3000/tareas/1
-```
+Pruebas realizadas
 
-Respuesta (`200 OK`):
+Para comprobar que las rutas funcionaran, realicé pruebas desde PowerShell y también agregué pruebas automatizadas.
 
-```json
-{
-  "mensaje": "Tarea eliminada correctamente",
-  "tarea": {
-    "id": 1,
-    "titulo": "Estudiar Express",
-    "descripcion": "Practicar la API",
-    "completada": true
-  }
-}
-```
+Para ejecutarlas, utilicé:
 
-## Pruebas automatizadas
-
-Ejecuta las pruebas del CRUD, validaciones y respuestas de error:
-
-```powershell
 npm test
-```
+
+Al ejecutar las pruebas obtuve el siguiente resultado:
+
+4 pruebas realizadas.
+
+4 pruebas aprobadas.
+
+0 pruebas fallidas.
+
+Las pruebas comprobaron la creación y consulta de tareas, la modificación de sus campos, la eliminación y el manejo de algunos errores.
+
+También probé manualmente el envío de una descripción vacía para comprobar que la API la rechazara.
+
+Lo que aprendí
+
+Con este trabajo pude practicar cómo crear un servidor con Express, separar el código en distintos archivos y utilizar los métodos GET, POST, PUT y DELETE.
+
+También aprendí a validar los datos que recibe la API, responder con códigos de estado y probar las rutas desde PowerShell. Además, utilicé Git para guardar los cambios y GitHub para subir el proyecto.
+
+Repositorio
+
+El código del proyecto se encuentra en GitHub:
+
+Ver API REST de tareas
+
+Evidencias
+
+En esta sección agregaré capturas de las pruebas realizadas, incluyendo la creación, consulta, modificación y eliminación de tareas, además de las validaciones y el resultado de las pruebas automatizadas.
+
+Autor
+
+Daniel Hernández Norambuena
