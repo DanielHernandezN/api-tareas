@@ -181,3 +181,6 @@ En esta sección agregaré capturas de las pruebas realizadas, incluyendo la cre
 Autor
 
 Daniel Hernández Norambuena
+
+respaldo fotografico:
+
